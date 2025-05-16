@@ -1,0 +1,64 @@
+{{ block title }}
+    
+{{ endblock }}
+
+{{ block content }}
+<style>
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        display: block;
+      }
+      th {
+        vertical-align: top;
+        text-align: center;
+      }
+      td {
+        width: 50px;
+    }
+</style>
+
+<script>
+$(document).ready(function()
+    {
+    $("tr:nth-child(4n+3)").css({
+        "background-color":"#D2D2D2"});
+    });
+</script>
+
+
+You have finish all rounds of the study, which involved a certain amount of commitment. What was your main motivation for completing the tasks?
+<p  >
+
+    <table  class= center >
+        <tr>
+            <th></th> <th>do not agree at all</th> <th> </th> <th> </th> <th> </th> <th> </th> <th> </th> <th> </th> <th> </th> <th>agree fully</th>
+        </tr>
+        <tr>
+        </tr>
+        {{ for field in form }}
+            <tr> 
+                <th id = "{{ forloop.counter }}">{{ field.label }}</th> <th></th>
+            {{ for choice in field }}
+                <td>&ensp;&ensp;{{ choice }}&ensp;&ensp;</td> 
+            {{ endfor }}
+                <th id = "{{ forloop.counter }}2"></th>
+
+            </tr>
+            <tr>
+            </tr>
+        {{ endfor }}
+      </table> 
+
+    </p>
+    <p>
+
+
+
+    </p>
+        {{ next_button }}
+    
+ <!-- Write your comments here <div w3-include-html="../utils/attentionAlertness.html"></div> 
+-->
+{{ endblock }}

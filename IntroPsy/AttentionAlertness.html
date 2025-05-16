@@ -1,0 +1,83 @@
+{{ block title }}
+    
+{{ endblock }}
+
+{{ block content }}
+<style>
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        display: block;
+      }
+      th {
+        vertical-align: top;
+        text-align: center;
+      }
+      td {
+        width: 50px;
+        vertical-align: top;
+        text-align: center;
+    }
+</style>
+
+<script>
+$(document).ready(function()
+    {
+    $("tr:nth-child(4n+6)").css({
+        "background-color":"#D2D2D2"});
+    });
+    function printpart(id1, id2) 
+    {   
+        var cB = document.getElementById(id1);
+        var text = cB.innerHTML;
+        text = filter(text);
+        cB.innerHTML = text.split("/")[0];
+        var cB = document.getElementById(id2);
+        cB.innerHTML = text.split("/")[1];
+    }
+    function filter(text)
+    {
+        return text.split(">")[1].split("<")[0]
+    }
+</script>
+
+How do you feel at the moment ? 
+<p  >
+
+    <table  class= center >
+        <tr>
+          <th>Scale level</th> <th></th> <th>1</th> <th>2</th> <th>3</th> <th>4</th> <th>5</th> <th> 6</th> <th>7</th> <th></th>
+        </tr>
+        <tr>
+            <th></th> <th></th> <th>very</th> <th></th> <th></th> <th>unsure</th> <th></th> <th></th> <th>very</th> <th></th>
+        </tr>
+        <tr>
+        </tr>
+        {{ for field in form }}
+            <tr> 
+                <th id = "{{ forloop.counter }}">{{ field.label }}</th> <th></th>
+            {{ for choice in field }}
+                <td>&ensp;&ensp;{{ choice }}&ensp;&ensp;</td> 
+            {{ endfor }}
+                <th id = "{{ forloop.counter }}2"></th>
+                <script>
+                    printpart("{{ forloop.counter }}","{{ forloop.counter }}2")
+                </script>
+            </tr>
+            <tr>
+            </tr>
+        {{ endfor }}
+      </table> 
+
+    </p>
+    <p>
+
+
+
+    </p>
+        {{ next_button }}
+    
+ <!-- Write your comments here <div w3-include-html="../utils/attentionAlertness.html"></div> 
+-->
+{{ endblock }}

@@ -1,0 +1,449 @@
+{{ block title }}
+    Tutorial
+
+{{ endblock }}
+
+{{ block content }}
+<style>
+    .otree-body {
+        max-width:1200px
+    }
+    td[align = center] {
+      border:1px solid black;
+      font-size:80%;
+      max-width: 24px;
+      min-height: 24px;
+      min-width: 24px;
+      max-height: 24px;
+    }
+    td.large {
+        align:center;
+        max-width: 48px;
+        min-height: 48px;
+        min-width: 48px;
+        max-height: 48px;
+      }
+    .box {
+        border: 2px solid black;
+        padding: 10px;
+        margin: 10px;
+      }
+    .smallbox {
+        padding: 5px;
+        margin: 5px;
+      }
+    div.inline{
+        display:inline;
+    }
+    button.button-9 {
+        appearance: button;
+        background-color: #405cf5;
+        border-radius: 6px;
+        border-width: 0;
+        box-sizing: border-box;
+        color: #fff;
+        height: 44px;
+        line-height: 1.15;
+        margin: 6px 0 0;
+        overflow: hidden;
+        padding: 0 12px;
+        text-align: center;
+      }
+      .container:after {
+        content: '';
+        display: grid;
+        grid-auto-flow: column;
+        clear: both;
+    }
+      
+      .one {
+        float: left;
+    }
+      .two {
+        margin: 12px;
+        float: left;
+        width: 24%;
+    }
+    h4 {
+        font-size: 26px;
+        margin: 20px 0;
+        text-align: center;
+        display:inline;
+        max-width: 24px;
+        min-height: 24px;
+        min-width: 24px;
+      }
+      .fadeButton {
+    display: none;
+}
+</style>
+
+
+<div id = secondPart > 
+
+
+
+
+
+    <div class = "container">
+        <div id="s-buttons" class = "one"></div>
+
+        <div class = "two">
+            <br>
+            <div id="current_study_box" class="box">
+                {{ if player.participant.Science }}
+                Current study name: <div id="current_study" class="inline" >None</div>
+                {{ else }}
+                Current color name: <div id="current_study" class="inline" >None</div>
+                {{ endif }}
+            </div>
+        {{ if player.participant.Science }}
+        Number of different studies: <div id="diff_studies" class="inline" >0</div>
+        Number of sample for each study:
+        {{ else }}
+        Number of different colors: <div id="diff_studies" class="inline" >0</div>
+        Number of tiles for each color:
+        {{ endif }}
+            <table id="recap"></table>
+        <br>
+        <button id="customNext" type = 'button' style="opacity: 0.5;" class = button-9>I finished</button>
+        <button id="Skipall" type = 'button'  style="visibility: hidden" class = button-9>I do not understand the task</button>
+
+        </div>
+    
+
+        <div id= thirdTask  class = "two">
+            {{ if player.participant.Science }}
+            Test at least 5 participants for Study "a", 7 participants for study "A" (you can press shift or caps lock plus "a") and 15 particpants for study ">".
+            {{ else }}
+            Color at least 5 tiles for color "a", 7 tiles for color "A" (you can press shift or caps lock plus "a") and 15 tiles for color ">".
+            {{ endif }}
+            <br><br>
+            {{ if player.participant.Science }}
+            Create a study by pressing any key on the keyboard. Add participants in this study by clicking a tile on the grid that is not colored.
+            {{ else }}
+            Create a new colour by pressing any key on the keyboard. Color a tile by clicking a tile on the grid that is not colored.
+            {{ endif }}
+            <br><br>
+            <div id="aGoal" class="smallbox" >&#x2717; 5 participants for study "a" </div>
+
+            <div id="AGoal" class="smallbox" >&#x2717; 7 participants for study "A" </div>
+
+            <div id=">Goal" class="smallbox" >&#x2717; 15 participants for study ">" </div>
+        </div>
+
+
+    </div>
+    
+
+    
+</div>
+
+
+<body onload="printBtn(0);">
+    <div>
+    </div>
+</body>
+<button id="realNext" style="display: none;" >Next</button>
+
+<input type="hidden" name="totalclicks" id="totalclicks" />
+<input type="hidden" name="strSubList" id="strSubList" />
+<input type="hidden" name="letterList" id="letterList" />
+<input type="hidden" name="skipToComment" id="skipToComment" />
+
+
+
+{{ endblock }}
+
+
+
+{{ block scripts }}
+<script>
+    let studiesDict = new Map() // sytax : Studies_dict.set(a, 'a')
+    var effortInTheory = 0;
+    var totalclicks = 0;
+    
+    document.onclick= function() {
+        totalclicks++;
+    }
+    setTimeout(function(){
+    console.log("hee");
+    var skipB = document.getElementById('Skipall');
+    skipB.style.visibility= "initial";
+    }, 120000);
+
+    function changeArray(A){
+        const isSemicolon = (element) => (element == ';');
+        var tempi = A.findIndex(isSemicolon);
+        if (tempi != -1)
+        {
+            A[tempi] = "semicolon"
+        };
+        const isComa = (element) => (element == ',');
+        tempi = A.findIndex(isComa);
+        if (tempi != -1)
+        {
+            A[tempi] = "coma"
+        }
+    }
+    
+    x = document.getElementById("customNext");
+    document.addEventListener("DOMContentLoaded", function (event) {
+        x.addEventListener("click", function(event) {
+        if (x.style.opacity == 1){
+            document.getElementById('strSubList').value = studiestoList(studiesDict);
+            document.getElementById('totalclicks').value = totalclicks;
+            document.getElementById('skipToComment').value = 0;
+            document.getElementById('letterList').value = studiestoLetters(studiesDict);
+            document.getElementById("realNext").click()
+        }
+        
+        });
+    });
+
+    w = document.getElementById("Skipall");
+    document.addEventListener("DOMContentLoaded", function (event) {
+        w.addEventListener("click", function(event) {
+        console.log("ici ça va");
+            document.getElementById('strSubList').value = studiestoList(studiesDict);
+            document.getElementById('totalclicks').value = totalclicks;
+            document.getElementById('skipToComment').value = 1;
+            document.getElementById('letterList').value = studiestoLetters(studiesDict);
+            document.getElementById("realNext").click()
+        
+        
+        });
+    });
+    
+
+     var totalButtons = parseInt({{ C.NUMBER_STUDIES  }});
+     var StudyButtons = document.getElementById("s-buttons");
+     var primeChosen = 83;
+      function getColor(keynumber) 
+      {
+        value_to_chaos = keynumber * primeChosen;
+    
+        var h = value_to_chaos % 360 ;
+        var s = 42 +  value_to_chaos % 56;
+        var l = 40 + value_to_chaos % 50;
+        return `hsl(${h},${s}%,${l}%)`;
+      }
+      function getFontColor(keynumber) 
+      {
+        value_to_chaos = keynumber * primeChosen;
+        var l = 40 + value_to_chaos % 50;
+        if (l < 50) {
+            return `white`;
+        }
+        else {
+            return `black`;
+        }
+      }
+    
+      let updateStudyNumber = function() {
+        let RoundBoth = false;
+        var keycount = 0;
+        
+        for (let [key, value] of studiesDict) {
+            if ((value >= 1 && RoundBoth!= 1) || (value >=7)) 
+            {
+                keycount += 1;
+            }
+        }
+        var counter = document.getElementById("diff_studies");
+        counter.innerHTML= keycount.toString();
+        };
+    
+        
+        let studiestoList = function(input) {
+            let formattedString = '0';
+            input.forEach(function(value, key) {
+                formattedString +=`;${value}`;
+            });
+            return formattedString;
+        };
+
+        let studiestoLetters = function(input) {
+            let keys = Array.from( input.keys() );
+            changeArray(keys);
+            if (keys.length === 0){
+                return ' ';
+            }
+            else {
+                return keys.join(';');
+            }
+        };
+    
+        function printBtn(theory) {
+            for (var x=1; x<totalButtons+1;x++){
+                var row = document.createElement("TR");
+    
+                for (var y=1; y<totalButtons+1;y++){
+                    var btn = document.createElement("td");
+                    btn.align = "center";
+                    btn.type = 'button';
+                    btn.style.width = '24px'; // setting the width to 200px
+                    btn.style.height = '24px'; // setting the height to 200px
+                    var t = document.createTextNode(""); 
+                    btn.appendChild(t);
+                    row.appendChild(btn);
+                    if (theory){
+                        btn.addEventListener('click',(e) => {
+                            buttonTheory(e);
+                          });
+                    }
+                    else{
+                        btn.addEventListener('click',(e) => {
+                            buttonStudy(e);
+                          });
+                    }
+                    
+                }
+                if (theory){
+                    TheoryButtons.appendChild(row);
+                }
+                else{
+                    StudyButtons.appendChild(row);
+                }
+    
+            }
+        }
+    
+        function buttonStudy(event){
+            var btn = event.target;
+            var oldchar = btn.innerText;
+            var currentStudy = document.getElementById("current_study");
+            var body = document.getElementById("recap");
+            var char = currentStudy.innerText;
+            if (char != "None") 
+            {
+                var keycode = char.charCodeAt(0);
+                btn.style.backgroundColor = getColor(keycode);
+                btn.style.color = getFontColor(keycode) 
+                btn.innerHTML = char;
+    
+                if  (studiesDict.has(oldchar))
+                {
+                    studiesDict.set(oldchar, studiesDict.get(oldchar)-1);
+                    var oldstudy = document.getElementById("study" + oldchar.toString());
+                    var oldvalue = studiesDict.get(oldchar);
+                    oldstudy.innerHTML =  `${oldchar}: ${oldvalue}`;
+                    
+                }
+    
+                if (studiesDict.has(char))
+                {
+                    studiesDict.set(char, studiesDict.get(char)+1);
+                    
+                    var study = document.getElementById("study" + char.toString());
+                }
+                else 
+                {   
+                    var SizeD = studiesDict.size;
+                    if (SizeD % 3 == 0 ){
+                        var jumpId = SizeD / 3;
+                        var row = document.createElement("tr");
+                        row.setAttribute('id','row'+jumpId.toString());
+                        body.appendChild(row);
+    
+                    }
+                    else
+                    {
+                        var jumpId = (SizeD - SizeD % 3) / 3;
+                        var row = document.getElementById('row'+jumpId.toString());
+                    }
+                    studiesDict.set(char, 1);
+                    var study = document.createElement("td");
+                    study.setAttribute('class',"large");
+                    study.setAttribute('id',"study" + char.toString());
+                    study.style.backgroundColor = getColor(keycode);
+                    study.style.color = getFontColor(keycode);
+                    row.appendChild(study);
+                }
+                
+                var el4 = document.getElementById('customNext');
+                if ((studiesDict.get('a')>= 5 &&  studiesDict.get('A')>= 7) &&  studiesDict.get('>')>= 15 )
+                {
+                    el4.style.opacity= "1";
+                }
+                else{
+                    el4.style.opacity= "0";
+                }
+
+                var ela = document.getElementById('aGoal');
+                if (studiesDict.get('a')>= 5)
+                {
+                    ela.innerHTML ='&#10003; <s>5 participants for study "a"</s>';
+                }
+                else {
+                    ela.innerHTML ='&#x2717; 5 participants for study "a"';
+                }
+                
+                var elA = document.getElementById('AGoal');
+                if (studiesDict.get('A')>= 7)
+                {
+                    
+                    elA.innerHTML ='&#10003; <s>7 participants for study "A"</s>';
+                }
+                else {
+                    elA.innerHTML ='&#x2717; 7 participants for study "A"';
+                }
+
+                var elcroc = document.getElementById('>Goal');
+                if (studiesDict.get('>')>= 15)
+                {
+                   
+                    elcroc.innerHTML ='&#10003; <s>15 participants for study ">"</s>';
+                }
+                else {
+                    elcroc.innerHTML ='&#x2717; 15 participants for study ">"';
+                }
+                
+                
+
+                var value = studiesDict.get(char);
+                study.innerHTML =  `${char}: ${value}`;
+            }
+            updateStudyNumber();
+    
+        }
+    
+    
+    
+        function buttonTheory(event){
+                var btn = event.target;
+                var oldcolor = btn.style.backgroundColor;
+                if (oldcolor != "black") 
+                {
+                    btn.style.backgroundColor = 'black';
+                    effortInTheory += 1;
+                    document.getElementById("current_theory").innerHTML = effortInTheory;
+                }
+    
+            }
+    
+    
+    
+    
+        document.onkeydown = function(e){
+    
+            var tex = window.event.key;
+            
+            if (tex.length==1){
+                var currentStudy = document.getElementById("current_study");
+                currentStudy.innerText = tex;
+                var keycode = tex.charCodeAt(0);
+                var currentBox = document.getElementById("current_study_box");
+                currentBox.style.backgroundColor = getColor(keycode);
+                currentBox.style.color = getFontColor(keycode);
+    
+            }
+        };
+    </script>
+    
+
+{{ endblock }}
+
+
+
+

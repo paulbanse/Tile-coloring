@@ -1,0 +1,383 @@
+{{ block title }}
+<b>Choice</b> - Round {% Round %}.<br>
+
+{{ endblock }}
+
+{{ block content }}
+<style>
+    .otree-body {
+        max-width:1200px
+    }
+    td[align = center] {
+      border:1px solid black;
+      font-size:80%;
+      max-width: 24px;
+      min-height: 24px;
+      min-width: 24px;
+      max-height: 24px;
+    }
+    td.large {
+        align:center;
+        max-width: 48px;
+        min-height: 48px;
+        min-width: 48px;
+        max-height: 48px;
+      }
+    .box {
+        border: 2px solid black;
+        padding: 10px;
+        margin: 10px;
+      }
+    div.inline{
+        display:inline;
+    }
+    button.button-9 {
+        appearance: button;
+        background-color: #405cf5;
+        border-radius: 6px;
+        border-width: 0;
+        box-sizing: border-box;
+        color: #fff;
+        height: 44px;
+        line-height: 1.15;
+        margin: 6px 0 0;
+        overflow: hidden;
+        padding: 0 12px;
+        text-align: center;
+      }
+      .container:after {
+        content: '';
+        display: grid;
+        grid-auto-flow: column;
+        clear: both;
+    }
+      
+      .one {
+        float: left;
+    }
+      .two {
+        margin: 12px;
+        float: left;
+        width: 24%;
+    }
+    h4 {
+        font-size: 26px;
+        margin: 20px 0;
+        text-align: center;
+        display:inline;
+        max-width: 24px;
+        min-height: 24px;
+        min-width: 24px;
+      }
+</style>
+
+
+<div id = secondPart > 
+
+
+
+
+
+    <div class = "container">
+        <div id="s-buttons" class = "one"></div>
+
+        <div class = "two">
+            <br>
+            <div id="current_study_box" class="box">
+                {{ if player.participant.Science }}
+                Current study name: <div id="current_study" class="inline" >None</div>
+                {{ else }}
+                Current color name: <div id="current_study" class="inline" >None</div>
+                {{ endif }}
+            </div>
+        
+            {{ if RoundBoth }}
+                {{ if player.participant.Science }}
+                    Number of different studies with at least 7 participants: <div id="diff_studies" class="inline" >0</div>
+                    <br>
+                    Number of participants for each study:
+                {{ else }}
+                    Number of different colors with at least 7 tiles: <div id="diff_studies" class="inline" >0</div>
+                    <br>
+                    Number of tiles for each color:
+                {{ endif }}
+            {{ else }}
+                {{ if player.participant.Science }}
+                    Number of different studies: <div id="diff_studies" class="inline" >0</div>
+                    <br>
+                    Number of participants for each study:
+                {{ else }}
+                    Number of different colors: <div id="diff_studies" class="inline" >0</div>
+                    <br>
+                    Number of boxes for each color:
+                {{ endif }}
+            {{ endif }}
+            <table id="recap"></table>
+        <br>
+
+        </div>
+    
+
+        <div id= thirdTask  class = "two">
+            The target is at least {{Threshold}} 
+            {{ if RoundBoth }}
+                {{ if player.participant.Science }}
+                    studies with at least 7 participants per study.
+                {{ else }}
+                    colors with at least 7 tiles per color.
+                {{ endif }}
+            {{ else }}
+                {{ if player.participant.Science }}
+                    {{ if player.participant.sampleStart}}
+                        participants in one study. 
+                    {{ else }}
+                        studies.
+                    {{ endif }}
+                {{ else }}
+                    {{ if player.participant.sampleStart }}
+                        tiles in one color.
+                    {{ else }}
+                        colors.
+                    {{ endif }}
+                {{ endif }}
+            {{ endif }}
+        </div>
+
+    </div>
+    
+</div>
+<input type="hidden" name="totalclicks" id="totalclicks" />
+<input type="hidden" name="strSubList" id="strSubList" />
+<input type="hidden" name="letterList" id="letterList" />
+
+<body onload="printBtn(0);">
+    <div>
+    </div>
+</body>
+
+
+
+
+{{ endblock }}
+
+
+
+{{ block scripts }}
+<script>
+let studiesDict = new Map() // sytax : Studies_dict.set(a, 'a')
+var effortInTheory = 0;
+var totalclicks = 0;
+
+document.onclick= function() {
+    totalclicks++;
+}
+
+function changeArray(A){
+    const isSemicolon = (element) => (element == ';');
+    var tempi = A.findIndex(isSemicolon);
+    if (tempi != -1)
+    {
+        A[tempi] = "semicolon"
+    };
+    const isComa = (element) => (element == ',');
+    tempi = A.findIndex(isComa);
+    if (tempi != -1)
+    {
+        A[tempi] = "coma"
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    $('.otree-timer__time-left').on('finish.countdown', function (event) {
+        document.getElementById('strSubList').value = studiestoList(studiesDict);
+        document.getElementById('totalclicks').value = totalclicks;
+        document.getElementById('letterList').value = studiestoLetters(studiesDict);
+    });
+});
+
+ var totalButtons = parseInt({{ C.NUMBER_STUDIES  }});
+ var StudyButtons = document.getElementById("s-buttons");
+ var primeChosen = 83;
+  function getColor(keynumber) 
+  {
+    value_to_chaos = keynumber * primeChosen;
+
+    var h = value_to_chaos % 360 ;
+    var s = 42 +  value_to_chaos % 56;
+    var l = 40 + value_to_chaos % 50;
+    return `hsl(${h},${s}%,${l}%)`;
+  }
+  function getFontColor(keynumber) 
+  {
+    value_to_chaos = keynumber * primeChosen;
+    var l = 40 + value_to_chaos % 50;
+    if (l < 50) {
+        return `white`;
+    }
+    else {
+        return `black`;
+    }
+  }
+
+  let updateStudyNumber = function() {
+    let RoundBoth = js_vars.RoundBoth;
+    var keycount = 0;
+    for (let [key, value] of studiesDict) {
+        if ((value >= 1 && RoundBoth!= 1) || (value >=7)) 
+        {
+            keycount += 1;
+        }
+    }
+    var counter = document.getElementById("diff_studies");
+    counter.innerHTML= keycount.toString();
+    };
+
+    
+    let studiestoList = function(input) {
+        let formattedString = '0';
+        input.forEach(function(value, key) {
+            formattedString +=`;${value}`;
+        });
+        return formattedString;
+    };
+
+    let studiestoLetters = function(input) {
+            let keys = Array.from( input.keys() );
+            changeArray(keys);
+            if (keys.length === 0){
+                return ' ';
+            }
+            else {
+                return keys.join(';');
+            }
+        };
+
+
+    function printBtn(theory) {
+        for (var x=1; x<totalButtons+1;x++){
+            var row = document.createElement("TR");
+
+            for (var y=1; y<totalButtons+1;y++){
+                var btn = document.createElement("td");
+                btn.align = "center";
+                btn.type = 'button';
+                btn.style.width = '24px'; // setting the width to 200px
+                btn.style.height = '24px'; // setting the height to 200px
+                var t = document.createTextNode(""); 
+                btn.appendChild(t);
+                row.appendChild(btn);
+                if (theory){
+                    btn.addEventListener('click',(e) => {
+                        buttonTheory(e);
+                      });
+                }
+                else{
+                    btn.addEventListener('click',(e) => {
+                        buttonStudy(e);
+                      });
+                }
+                
+            }
+            if (theory){
+                TheoryButtons.appendChild(row);
+            }
+            else{
+                StudyButtons.appendChild(row);
+            }
+
+        }
+    }
+
+    function buttonStudy(event){
+        var btn = event.target;
+        var oldchar = btn.innerText;
+        var currentStudy = document.getElementById("current_study");
+        var body = document.getElementById("recap");
+        var char = currentStudy.innerText;
+        if (char != "None") 
+        {
+            var keycode = char.charCodeAt(0);
+            btn.style.backgroundColor = getColor(keycode);
+            btn.style.color = getFontColor(keycode) 
+            btn.innerHTML = char;
+
+            if  (studiesDict.has(oldchar))
+            {
+                studiesDict.set(oldchar, studiesDict.get(oldchar)-1);
+                var oldstudy = document.getElementById("study" + oldchar.toString());
+                var oldvalue = studiesDict.get(oldchar);
+                oldstudy.innerHTML =  `${oldchar}: ${oldvalue}`;
+                
+            }
+
+            if (studiesDict.has(char))
+            {
+                studiesDict.set(char, studiesDict.get(char)+1);
+                
+                var study = document.getElementById("study" + char.toString());
+            }
+            else 
+            {   
+                var SizeD = studiesDict.size;
+                if (SizeD % 3 == 0 ){
+                    var jumpId = SizeD / 3;
+                    var row = document.createElement("tr");
+                    row.setAttribute('id','row'+jumpId.toString());
+                    body.appendChild(row);
+
+                }
+                else
+                {
+                    var jumpId = (SizeD - SizeD % 3) / 3;
+                    var row = document.getElementById('row'+jumpId.toString());
+                }
+                studiesDict.set(char, 1);
+                var study = document.createElement("td");
+                study.setAttribute('class',"large");
+                study.setAttribute('id',"study" + char.toString());
+                study.style.backgroundColor = getColor(keycode);
+                study.style.color = getFontColor(keycode);
+                row.appendChild(study);
+            }
+            
+            var value = studiesDict.get(char)
+            study.innerHTML =  `${char}: ${value}`;
+        }
+        updateStudyNumber();
+
+    }
+
+
+
+    function buttonTheory(event){
+            var btn = event.target;
+            var oldcolor = btn.style.backgroundColor;
+            if (oldcolor != "black") 
+            {
+                btn.style.backgroundColor = 'black';
+                effortInTheory += 1;
+                document.getElementById("current_theory").innerHTML = effortInTheory;
+            }
+
+        }
+
+
+
+
+    document.onkeydown = function(e){
+
+        var tex = window.event.key;
+        
+        if (tex.length==1){
+            var currentStudy = document.getElementById("current_study");
+            currentStudy.innerText = tex;
+            var keycode = tex.charCodeAt(0);
+            var currentBox = document.getElementById("current_study_box");
+            currentBox.style.backgroundColor = getColor(keycode);
+            currentBox.style.color = getFontColor(keycode);
+
+        }
+    };
+</script>
+
+{{ endblock }}

@@ -1,0 +1,33 @@
+{{ block title }}
+    Thank you for participating!
+{{ endblock }}
+
+{{ block content }}
+    {% if tie %}
+        Over your career, you have accumulated {{ cumulative_publications }} publication(s). <br>
+        Your performance is tied with another player, and your combined tied rank is {{rank}} out of {{ C.GROUP_SIZE }}.
+    {% elif rank == 1 %}
+        <b> Congratulations! </b>   <br>
+        Over your career, you have accumulated {{ cumulative_publications }} publication(s).
+        <br>
+        This makes you the <b> most successful scientist within your group. </b>
+    {% elif rank == 2 %}
+        <b> Congratulations. </b>
+        Over your career, you have accumulated {{ cumulative_publications }} publication(s). <br>
+        This is the <b>2nd best performance</b> in your group.
+    {% elif rank == 3 %}
+        Over your career, you have accumulated {{ cumulative_publications }} publication(s). <br>
+        This is the <b>3rd best performance</b> in your group of {{ C.GROUP_SIZE }}.
+    {% else %}
+        Over your career, you have accumulated {{ cumulative_publications }} publication(s). <br>
+        Your rank is <b>{{rank}}th</b> out of {{ C.GROUP_SIZE }}.
+    {% endif %}
+    <br><br>
+    Your fixed baseline reimbursement is €{{ C.BASE_PAY }}. <br>
+    Due to your relative publication performance you additionally receive a bonus of €{{ bonus }}. <br>
+    <b> Your total payoff thus sums to €{{ reward }}. </b>
+
+    {{ next_button }}
+{{ endblock }}
+
+

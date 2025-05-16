@@ -1,0 +1,68 @@
+{{ block title }}
+    Procedure
+{{ endblock }}
+{{ block content }}
+
+  <div id = Scic  display = none >
+    <p>
+      <b> Welcome to this study about scientific practices. We want to find out under which 
+        circumstances scientific decisions are made.  </b>
+      <br>
+      <br><b> You will play the role of a scientist whose job it is to conduct studies. You can conduct as many studies as you like and test as many subjects as you like in each study.  </b>        
+      <br>
+      <br>
+      In scientific work, these decisions have consequences: Investing more effort in a single study 
+        increases the likelihood of a true and significant result (e.g. a difference between two groups 
+        of participants or a correlation between skills). On the other hand, spending more effort on a 
+        single study means that fewer resources are available for further studies with similar or 
+        different questions. 
+      <br>
+
+  </div>
+
+
+  <div id = Gener display = none >
+    <p>
+        <b> Welcome to this study. We are interested in how quickly people click with their mouse and/or keyboard depending on different targets </b>
+        <br>
+        <br> <b> Feel free to score as many points as you can.</b>
+        <br>
+        <br>
+        On the next page, you will play a simple task in which you use the mouse to color in tiles. 
+        Each time you successfully color in a tile, you will receive a point. 
+        During this study we ask you at different stages to either:
+        <ul>
+          <li>color many tiles in one color</li>
+          <li>use many different colors</li>
+          <li>follow a certain rule on the number of tiles in each color</li>
+        </ul> 
+        
+        Please carefully read what is required at each task.
+        <br>
+
+  
+      </div>
+
+      In the next step we will show you how to proceed.
+      <br>
+      <br>
+      {{ next_button }}
+
+<script>
+blocSc = document.getElementById("Scic");
+blocGn = document.getElementById("Gener");
+if ({{ Science }})
+{
+  blocGn.style.display = 'none';
+  blocSc.style.display = 'initial';
+} 
+else {
+  blocSc.style.display = 'none';
+  blocGn.style.display = 'initial';
+}
+</script>
+
+
+{{ endblock }}
+
+

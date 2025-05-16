@@ -1,0 +1,62 @@
+{{ block title }}
+    Welcome
+{{ endblock }}
+{{ block content }}
+<style>
+
+    .box {
+        border: 2px solid black;
+        padding: 10px;
+        margin: 0px;
+      }
+</style>
+
+
+<p>
+    {{ if RoundBoth }}
+        {{ if player.participant.Science }}
+            In the following, you conduct studies with at least 7 participants per study during 5 rounds.  <br>
+        {{ else }}
+            In the following, you create colors with at least 7 tiles per color during 5 rounds.  <br>
+        {{ endif }}
+    {{ else }}
+        {{ if player.participant.Science }}
+            In the following, you conduct studies with participants during 5 rounds.  <br>
+        {{ else }}
+            In the following, you color in tiles during 5 rounds. <br>
+        {{ endif }}
+    {{ endif }}
+
+    <br>
+    Each round lasts 60 seconds.  <br>Before each round, you will be asigned a threshold for the round.  <br>You will receive bonus payoff for each round with above-threshold results.
+</p>
+    <br>
+    <div class="box">
+        Your goal for the next round is to have at least {{Threshold}} 
+        {{ if RoundBoth }}
+            {{ if player.participant.Science }}
+               studies with at least 7 participants per study.
+            {{ else }}
+                colors with at least 7 tiles per color.
+            {{ endif }}
+        {{ else }}
+            {{ if player.participant.Science }}
+                {{ if player.participant.sampleStart}}
+                    participants in one study.
+                {{ else }}
+                    studies.
+                {{ endif }}
+            {{ else }}
+                {{ if player.participant.sampleStart }}
+                    tiles in one color.
+                {{ else }}
+                    colors.
+                {{ endif }}
+            {{ endif }}
+        {{ endif }}
+
+    </div>
+    <br>
+    {{ next_button }}
+
+{{ endblock }}

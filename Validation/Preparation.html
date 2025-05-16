@@ -1,0 +1,48 @@
+{{ block title }}
+    Well done ! <br>
+
+{{ endblock }}
+
+{{ block content }}
+
+    {{ if RoundBoth }}
+        On the next page, you will have to combine both tasks. You have to create<b>
+        {{ if player.participant.Science }}
+            studies with at least 7 participants per study.
+        {{ else }}
+            colors with at least 7 tiles per color.
+        {{ endif }}
+        </b>
+    {{ else }}
+        On the next page, you will face a similar task, you have to <b>
+        {{ if player.participant.Science }}
+            {{ if sampleStart}}
+                add as many participants to one study as you can.
+            {{ else }}
+                create as many studies as you can.
+            {{ endif }}
+        {{ else }}
+            {{ if sampleStart }}
+                color as many tiles in one color as you can.
+            {{ else }}
+                use as many colors as you can.
+            {{ endif }}
+        {{ endif }}
+    {{ endif }}
+</b>
+    <br>
+    
+    <br>
+    Good luck!
+    <br>
+    <br>
+
+    {{ next_button }}
+
+
+    
+ 
+        
+{{ endblock }}
+
+

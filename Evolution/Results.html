@@ -1,0 +1,70 @@
+{{ block title }}
+    <b>Results</b> - Player {% player.participant.id_in_session %} - Round {% player.round_number %} of {% C.NUM_ROUNDS %}.  <br>
+
+{{ endblock }}
+
+{{ block content }}
+    {% if new_publications == 0 %}
+        Sorry. Your studies did not yield any significant results this round and you could not publish anything new.
+    {% elif new_publications == 1%}
+        Congratulations! <b> You published {{ new_publications }} new study</b>,
+        raising your total publication count to {{ cumulative_publications }}.
+    {{ else }}
+        Congratulations! <b> You published {{ new_publications }} new studies</b>,
+        raising your total publication count to {{ cumulative_publications }}.
+    {{ endif }}
+    <br>
+    <br>
+    Here’s an overview of the published literature and all participants’ successes:<br>
+    The top {{C.STR_PERCENTAGE}} % are in the box:
+    <br>
+    <p style="padding: 5px; border: 2px solid black;">
+    {% for p in playersRanked %}
+            {% if player.id_in_group == p.id_in_group %}
+                <b> You: Player {{ p.participant.id_in_session }} (rank = {{ p.participant.rank }})</b> has an average theory of {{ p.participant.Avgtheory}} and {{ p.participant.publications}} total publication(s) with
+            sample size(s): <br>&emsp; &emsp;&emsp;{{ p.participant.pub_samples}}  <br>
+            {% else %}
+                <b> &emsp; &emsp;Player {{ p.participant.id_in_session }} (rank = {{ p.participant.rank }})</b> has an average theory of {{ p.participant.Avgtheory}} and {{ p.participant.publications}} total publication(s) with
+                sample size(s): <br>&emsp; &emsp;&emsp;{{ p.participant.pub_samples}}  <br>
+            {% endif %}
+            {%if lastSelected.id_in_group == p.id_in_group%}
+                </p>The following players are not selected : 
+                <p style="padding: 5px;">
+            {% endif %}
+    {% endfor %}
+    </p>
+<!--
+    {% if player.publication %}
+        <b>Congratulations! You have received an award for your scientific contributions. </b>
+    {% endif %}
+
+    {% if player.group.winner1 == player.id_in_group %}
+         {% if player.group.winner1 == player.group.winner2 %}
+            <b>Congratulations! You have received two grants over {% player.group.mean_cost %} each. </b>
+        {% else %}
+            <b>Congratulations! You have received a grant of {% player.income %}. </b>
+        {% endif %}
+    {% elif player.group.winner2 == player.id_in_group %}
+        <b>Congratulations! You have received a grant of {% player.income %}. </b>
+    {% else %}
+        {% if player.group.winner1 > 0 %}
+            {% if player.group.winner1 == player.group.winner2 %}
+                Notice: Player {% player.group.winner1 %} received two grants of {% player.group.mean_cost %} each.
+            {{ else }}
+                Notice: Players {% player.group.winner1 %} and {% player.group.winner2 %}, each received a grant of {% player.group.mean_cost %}.
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    -->
+    <br>
+
+
+    {{ next_button }}
+
+
+    
+ 
+        
+{{ endblock }}
+
+

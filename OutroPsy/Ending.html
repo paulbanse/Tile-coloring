@@ -1,0 +1,34 @@
+{{ block title }}
+    Thank you for participating
+
+{{ endblock }}
+
+{{ block content }}
+<style>
+    .otree-timer {
+        display: none;
+    }
+    .box {
+        border: 2px solid black;
+        padding: 10px;
+        margin: 10px;
+      }
+</style>
+
+    This study is now over, thank you for participating.
+    <br>
+    <br>
+
+    <div class="box">
+    You have achieved {{ player.participant.grants }} bonus goals.
+    </div>
+    
+    <br>
+    <br>
+    To validate the completion of the study, click the following link <a href="https://app.prolific.com/submissions/complete?cc=C16RUU2D">https://app.prolific.com/submissions/complete?cc=C16RUU2D</a>
+    
+    {{ next_button }}
+        
+{{ endblock }}
+
+
